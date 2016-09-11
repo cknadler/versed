@@ -1,0 +1,23 @@
+PATH
+  remote: .
+  specs:
+    versed (0.1.0)
+      mustache (~> 1.0)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    minitest (5.9.0)
+    mustache (1.0.3)
+    rake (10.5.0)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  minitest (~> 5.8)
+  rake (~> 10.5)
+  versed!
+
+BUNDLED WITH
+   1.11.2

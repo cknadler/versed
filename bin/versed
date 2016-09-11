@@ -1,41 +1,21 @@
 #!/usr/bin/env ruby
 
 require "optparse"
-require "nidyx"
-require "nidyx/version"
-require "nidyx/generator"
+require "versed/version"
 
 ###
 # help text
 ###
 
 BANNER = <<END
-usage: nidyx [-h] [--version]
-       nidyx <schema> [-n] [-a author] [-c company] [-p project]
-             [-o directory] [-x prefix]
-             [--json-model] # objc specific
+usage: versed [-h] [--version]
+       versed <schedule> <log> [optional_output_target]
 
 END
 
 DESC = <<END
-
-Nidyx generates plain Objective-C models from JSON Schema. It can also generate
-models with JSONModel support.
-
-Examples
-========
-
-Generate models for a given schema.
-
-  $ nidyx example.json.schema
-
-Specify an ouput directory and a class prefix:
-
-  $ nidyx example.json.schema -x ClassPrefix -o /path/to/output/directory
-
-Generate with JSONModel support and optional documentation:
-
-  $ nidyx example.json.schema --json-model -a "Your Name" -p "Project Name"
+Versed takes in a YAML schedule and weekly log and outputs a visualization of time spent this week (in a PDF).
+See https://github.com/cknadler/versed for more details.
 
 END
 
@@ -43,42 +23,8 @@ END
 # option parsing
 ###
 
-# defaults
-options = {
-  :comments => true,
-  :platform => "objc",
-  :objc => {
-    :json_model => false
-  }
-}
-
 opts = OptionParser.new do |o|
   o.banner = BANNER
-
-  # general generation options
-  o.on("-a", "--author AUTHOR", "Author's name") do |author|
-    options[:author] = author
-  end
-  o.on("-c", "--company COMPANY", "Company's name") do |company|
-    options[:company] = company
-  end
-  o.on("-p", "--project PROJECT", "Project's name") do |project|
-    options[:project] = project
-  end
-  o.on("-o", "--output DIRECTORY", "Output models to a specific directory") do |output_directory|
-    options[:output_directory] = output_directory
-  end
-  o.on("-x", "--class-prefix PREFIX", "Add a prefix to generated model names") do |prefix|
-    options[:class_prefix] = prefix
-  end
-  o.on("-n", "--no-comments", "Generate without header comments") do
-    options[:comments] = false
-  end
-
-  # objc generation options
-  o.on("--json-model", "Generate with JSONModel support") do
-    options[:objc][:json_model] = true
-  end
 
   # other
   o.on("-h", "--help", "Print usage information") do
@@ -86,7 +32,7 @@ opts = OptionParser.new do |o|
     exit
   end
   o.on("--version", "Print version") do
-    puts Nidyx::VERSION
+    puts Versed::VERSION
     exit
   end
 
@@ -101,7 +47,7 @@ rescue OptionParser::InvalidOption => e
   exit 1
 end
 
-if ARGV.size < 1
+if ARGV.size < 2
   puts "Too few arguments." unless ARGV.empty?
   puts opts
   exit 1
@@ -111,4 +57,3 @@ end
 # run
 ###
 
-Nidyx::Generator.run(ARGV[0], options)

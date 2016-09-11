@@ -2,6 +2,7 @@
 
 require "optparse"
 require "versed/version"
+require "versed/generator"
 
 ###
 # help text
@@ -9,13 +10,13 @@ require "versed/version"
 
 BANNER = <<END
 usage: versed [-h] [--version]
-       versed <schedule> <log> [optional_output_target]
+       versed <schedule> <log>
 
 END
 
 DESC = <<END
 
-Versed takes in a YAML schedule and weekly log and outputs a visualization of time spent this week (in a PDF).
+Versed takes in two YAML files (schedule and weekly log) and outputs a visualization of time spent this week (in a PDF).
 See https://github.com/cknadler/versed for more details.
 
 END
@@ -49,8 +50,8 @@ rescue OptionParser::InvalidOption => e
 end
 
 if ARGV.size < 2
-  puts "Too few arguments." unless ARGV.empty?
   puts opts
+  puts "Too few arguments." unless ARGV.empty?
   exit 1
 end
 
@@ -58,3 +59,4 @@ end
 # run
 ###
 
+Versed::Generator.run(ARGV[0], ARGV[1])

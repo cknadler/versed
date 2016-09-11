@@ -16,6 +16,7 @@ Gem::Specification.new do |s|
   s.required_ruby_version = ">= 2.0.0"
 
   s.add_runtime_dependency "mustache", "~> 1.0"
+  s.add_runtime_dependency "pdfkit", "~> 0.8.2"
 
   s.add_development_dependency "rake", "~> 10.5"
   s.add_development_dependency "minitest", "~> 5.8"

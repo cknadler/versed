@@ -1,0 +1,19 @@
+<table class="table table-bordered table-condensed">
+	<thead>
+		<tr class="active">
+			<th></th>
+			{{#weekdays}}
+			<th>{{.}}</th>
+			{{/weekdays}}
+		</tr>
+	</thead>
+
+  {{#categories}}
+  <tr>
+    <th scope="row" class="active">{{id}}</th>
+    {{#tasks}}
+    <td class="{{style}}">{{time_spent}}</td>
+    {{/tasks}}
+  </tr>
+  {{/categories}}
+</table>

@@ -142,7 +142,7 @@ module Versed
     end
 
     def days_active_percent
-      ((days_active / 7.0) * 100).round(1)
+      percent(days_active, 7)
     end
 
     def total_min_logged
@@ -181,22 +181,22 @@ module Versed
     end
 
     def total_hr_logged
-      (total_min_logged / 60.0).round(1)
+      divide(total_min_logged, 60)
     end
 
     def min_logged_per_day
-      (total_min_logged / 7.0).round(1)
+      divide(total_min_logged, 7)
     end
 
     def hr_logged_per_day
-      (min_logged_per_day / 60.0).round(1)
+      divide(min_logged_per_day, 60)
     end
 
     def total_min_scheduled
       time = 0
       @days.each do |day|
         day.tasks.each do |task|
-          next unless task.time_scheduled
+          next unless task.time_scheduled?
           time += task.time_scheduled
         end
       end
@@ -204,11 +204,11 @@ module Versed
     end
 
     def completed_percent
-      ((total_min_logged_on_schedule / total_min_scheduled.to_f) * 100).round(1)
+      percent(total_min_logged_on_schedule, total_min_scheduled)
     end
 
     def off_schedule_percent
-      ((total_min_logged_off_schedule / total_min_logged.to_f) * 100).round(1)
+      percent(total_min_logged_off_schedule, total_min_logged)
     end
 
     ###
@@ -239,6 +239,14 @@ module Versed
       end
 
       incomplete
+    end
+
+    def percent(a, b)
+      ((a / b.to_f) * 100).round(1)
+    end
+
+    def divide(a, b)
+      (a / b.to_f).round(1)
     end
   end
 end

@@ -19,12 +19,10 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency "pdfkit", "~> 0.8.2"
 
   s.add_development_dependency "rake", "~> 10.5"
-  s.add_development_dependency "minitest", "~> 5.8"
 
   s.bindir           = "bin"
   s.require_paths    = ["lib"]
   s.executables      = ["versed"]
   s.files            = Dir["lib/**/*", "templates/**/*"]
-  s.test_files       = Dir["test/**/test*"]
   s.extra_rdoc_files = ["README.md","LICENSE"]
 end

@@ -17,8 +17,7 @@ Gem::Specification.new do |s|
 
   s.add_runtime_dependency "mustache", "~> 1.0"
   s.add_runtime_dependency "pdfkit", "~> 0.8.2"
-
-  s.add_development_dependency "rake", "~> 10.5"
+  s.add_runtime_dependency "wkhtmltopdf-binary", "~> 0.12.3"
 
   s.bindir           = "bin"
   s.require_paths    = ["lib"]

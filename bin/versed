@@ -10,7 +10,7 @@ require "versed/generator"
 
 BANNER = <<END
 usage: versed [-h] [--version]
-       versed <schedule> <log>
+       versed <schedule> <log> [output_path]
 
 END
 
@@ -59,4 +59,4 @@ end
 # run
 ###
 
-Versed::Generator.run(ARGV[0], ARGV[1])
+Versed::Generator.run(ARGV[0], ARGV[1], ARGV[2])

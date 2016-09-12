@@ -4,21 +4,19 @@ PATH
     versed (0.1.0)
       mustache (~> 1.0)
       pdfkit (~> 0.8.2)
+      wkhtmltopdf-binary (~> 0.12.3)
 
 GEM
   remote: https://rubygems.org/
   specs:
-    minitest (5.9.0)
     mustache (1.0.3)
     pdfkit (0.8.2)
-    rake (10.5.0)
+    wkhtmltopdf-binary (0.12.3)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
-  minitest (~> 5.8)
-  rake (~> 10.5)
   versed!
 
 BUNDLED WITH

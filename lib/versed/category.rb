@@ -22,6 +22,10 @@ module Versed
       hash
     end
 
+    def incomplete?
+      total_min_incomplete > 0
+    end
+
     def total_min_scheduled
       scheduled = 0
       @tasks.each do |task|

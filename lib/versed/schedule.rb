@@ -150,34 +150,11 @@ module Versed
     end
 
     def total_min_logged_on_schedule
-      time = 0
-      @days.each do |day|
-        day.tasks.each do |task|
-          next unless task.time_spent && task.time_scheduled
-          if task.time_scheduled < task.time_spent
-            time += task.time_scheduled
-          else
-            time += task.time_spent
-          end
-        end
-      end
-      time
+      @days.collect { |d| d.time_on_schedule }.reduce(0, :+)
     end
 
     def total_min_logged_off_schedule
-      time = 0
-      @days.each do |day|
-        day.tasks.each do |task|
-          next unless task.time_spent
-
-          if !task.time_scheduled
-            time += task.time_spent
-          elsif task.time_scheduled < task.time_spent
-            time += task.time_spent - task.time_scheduled
-          end
-        end
-      end
-      time
+      @days.collect { |d| d.time_off_schedule }.reduce(0, :+)
     end
 
     def total_hr_logged
@@ -193,14 +170,7 @@ module Versed
     end
 
     def total_min_scheduled
-      time = 0
-      @days.each do |day|
-        day.tasks.each do |task|
-          next unless task.time_scheduled?
-          time += task.time_scheduled
-        end
-      end
-      time
+      @days.collect { |d| d.time_scheduled }.reduce(0, :+)
     end
 
     def completed_percent
@@ -228,14 +198,13 @@ module Versed
 
     def find_incomplete_tasks
       incomplete = []
-      @categories.each do |id, category|
-        if category.total_min_incomplete > 0
-          incomplete << category
-        end
-      end
-
+      @categories.each { |id, category| incomplete << category if category.incomplete? }
       return incomplete.sort_by { |c| [-c.percent_incomplete, -c.total_min_incomplete] }
     end
+
+    ###
+    # General
+    ###
 
     def percent(a, b)
       ((a / b.to_f) * 100).round(1)

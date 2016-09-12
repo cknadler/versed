@@ -220,7 +220,7 @@ module Versed
       find_incomplete_tasks.each do |category|
         hash = {}
         hash["id"] = category.id
-        hash["value"] = "#{category.total_min_logged} / #{category.total_min_scheduled} (#{category.percent_incomplete}%)"
+        hash["value"] = "#{category.total_min_logged} / #{category.total_min_scheduled} (-#{category.percent_incomplete}%)"
         top_tasks << hash
       end
       top_tasks
@@ -234,11 +234,7 @@ module Versed
         end
       end
 
-      incomplete.sort! do |x, y|
-        y.total_min_incomplete <=> x.total_min_incomplete
-      end
-
-      incomplete
+      return incomplete.sort_by { |c| [-c.percent_incomplete, -c.total_min_incomplete] }
     end
 
     def percent(a, b)

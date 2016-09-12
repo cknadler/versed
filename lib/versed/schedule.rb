@@ -24,10 +24,19 @@ module Versed
       category_ids(raw_schedule).uniq.sort.each do |id|
         self.categories[id] = Versed::Category.new(id)
       end
+
+      # find start date
+      date = Date.parse(raw_log.keys[0])
+      date = date.prev_day(date.wday)
+
+      # TODO: add handle for exluding days that fall out of the selected week
+
       # create days
       7.times.each_with_index do |day_id|
-        @days[day_id] = Day.new(day_id)
+        @days[day_id] = Day.new(day_id, date)
+        date = date.next_day
       end
+
       # map category tasks to days so tasks can be looked up by day or category
       categories.each do |id, category|
         category.tasks.each_with_index do |task, index|
@@ -44,7 +53,8 @@ module Versed
         "weekdays" => WEEKDAYS,
         "categories" => [],
         "metadata" => metadata,
-        "incomplete_tasks" => incomplete_tasks
+        "incomplete_tasks" => incomplete_tasks,
+        "first_date" => @days[0].date
       }
 
       self.categories.each do |id, category|

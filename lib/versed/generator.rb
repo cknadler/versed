@@ -22,8 +22,15 @@ module Versed
 
       # make the PDF
       output_path = Dir.pwd unless output_path
+      output_path = File.expand_path(output_path)
+
+      if File.directory?(output_path)
+        first_date = schedule.days[0].date
+        output_path = File.join(output_path, "#{first_date}-routine-analysis.pdf")
+      end
+
       kit = PDFKit.new(html, :page_size => 'Letter')
-      kit.to_file(File.join(File.expand_path(output_path), "test.pdf"))
+      kit.to_file(output_path)
     end
   end
 end

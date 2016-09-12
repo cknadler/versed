@@ -9,5 +9,10 @@ module Versed
       @date = date
       @tasks = []
     end
+
+    def active?
+      @tasks.each { |t| return true if t.time_spent? }
+      false
+    end
   end
 end

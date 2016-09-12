@@ -138,16 +138,7 @@ module Versed
     end
 
     def days_active
-      active = 0
-      @days.each do |day|
-        day.tasks.each do |task|
-          if task.time_spent && task.time_spent > 0
-            active += 1
-            break
-          end
-        end
-      end
-      active
+      @days.count { |d| d.active? }
     end
 
     def days_active_percent

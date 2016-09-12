@@ -14,6 +14,14 @@ module Versed
       }
     end
 
+    def time_spent?
+      self.time_spent && self.time_spent > 0
+    end
+
+    def time_scheduled?
+      self.time_scheduled && self.time_scheduled > 0
+    end
+
     private
 
     DANGER_STYLE = "danger"

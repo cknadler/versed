@@ -1,5 +1,5 @@
 require "versed/category_manager"
-require "versed/day"
+require "versed/day_manager"
 
 module Versed
   class Schedule
@@ -20,15 +20,22 @@ module Versed
       @days = Array.new(7)
 
       # find start date
-      date = Date.parse(raw_log.keys[0])
-      date = date.prev_day(date.wday)
+      start_date = Date.parse(raw_log.keys[0])
+      start_date = start_date.prev_day(start_date.wday)
 
-      # TODO: add handle for exluding days that fall out of the selected week
+      raw_log.keys.each do |day|
+        if Date.parse(day).cweek != start_date.cweek
+          puts "Days from multiple weeks present."
+          puts "Ensure log only contains days from one calendar week (Sun-Sat)."
+          exit 1
+        end
+      end
 
       # create days
+      current_date = start_date.dup
       7.times.each_with_index do |day_id|
-        @days[day_id] = Day.new(day_id, date)
-        date = date.next_day
+        @days[day_id] = Day.new(day_id, current_date)
+        current_date = current_date.next_day
       end
 
       # map category tasks to days so tasks can be looked up by day or category

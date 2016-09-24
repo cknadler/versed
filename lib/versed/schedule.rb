@@ -1,9 +1,9 @@
-require "versed/category"
+require "versed/category_manager"
 require "versed/day"
 
 module Versed
   class Schedule
-    attr_reader :categories, :days
+    attr_reader :category_manager, :days
 
     WEEKDAYS = [
       "Sunday",
@@ -16,14 +16,8 @@ module Versed
     ]
 
     def initialize(raw_schedule, raw_log)
-      # TODO: refactor so this is an array, not a hash
-      @categories = {}
+      @category_manager = Versed::CategoryManager.new(raw_schedule, raw_log)
       @days = Array.new(7)
-
-      # create categories
-      category_ids(raw_schedule).uniq.sort.each do |id|
-        self.categories[id] = Versed::Category.new(id)
-      end
 
       # find start date
       date = Date.parse(raw_log.keys[0])
@@ -38,9 +32,9 @@ module Versed
       end
 
       # map category tasks to days so tasks can be looked up by day or category
-      categories.each do |id, category|
+      self.category_manager.categories.each do |category|
         category.tasks.each_with_index do |task, index|
-          days[index].tasks << task
+          @days[index].tasks << task
         end
       end
 
@@ -57,7 +51,7 @@ module Versed
         "first_date" => @days[0].date
       }
 
-      self.categories.each do |id, category|
+      self.category_manager.categories.each do |category|
         hash["categories"] << category.to_hash
       end
 
@@ -72,12 +66,7 @@ module Versed
         next unless day_id
 
         schedule_day.each do |scheduled_task_name, time_scheduled|
-          category = self.categories[scheduled_task_name]
-          unless category
-            puts "Error, unrecognized category in schedule."
-            exit 1
-          end
-
+          category = self.category_manager.lookup(scheduled_task_name)
           category.tasks[day_id].time_scheduled = time_scheduled
         end
       end
@@ -88,7 +77,7 @@ module Versed
         day_id = Date.parse(day).wday
 
         tasks.each do |log_task_name, time_spent|
-          category = self.categories[log_task_name]
+          category = self.category_manager.lookup(log_task_name)
           next unless category # TODO: possibly handle tasks that are done out of the schedule here
 
           category.tasks[day_id].time_spent = time_spent
@@ -96,13 +85,6 @@ module Versed
       end
     end
 
-    def category_ids(raw_schedule)
-      category_ids = []
-      raw_schedule.each do |day, tasks|
-        category_ids += tasks.keys
-      end
-      category_ids
-    end
 
     def lookup_day(raw_schedule, day_id)
       raw_schedule[WEEKDAYS[day_id]]
@@ -187,7 +169,7 @@ module Versed
 
     def incomplete_tasks
       top_tasks = []
-      find_incomplete_tasks.each do |category|
+      self.category_manager.incomplete_tasks.each do |category|
         hash = {}
         hash["id"] = category.id
         hash["value"] = "#{category.total_min_logged} / #{category.total_min_scheduled} (-#{category.percent_incomplete}%)"
@@ -196,11 +178,6 @@ module Versed
       top_tasks
     end
 
-    def find_incomplete_tasks
-      incomplete = []
-      @categories.each { |id, category| incomplete << category if category.incomplete? }
-      return incomplete.sort_by { |c| [-c.percent_incomplete, -c.total_min_incomplete] }
-    end
 
     ###
     # General

@@ -3,7 +3,7 @@ require "versed/day_manager"
 
 module Versed
   class Schedule
-    attr_reader :category_manager, :days
+    attr_reader :category_manager, :days, :date_range
 
     WEEKDAYS = [
       "Sunday",
@@ -17,26 +17,24 @@ module Versed
 
     def initialize(raw_schedule, raw_log)
       @category_manager = Versed::CategoryManager.new(raw_schedule, raw_log)
-      @days = Array.new(7)
+      @days = []
 
-      # find start date
       start_date = Date.parse(raw_log.keys[0])
       start_date = start_date.prev_day(start_date.wday)
+      @date_range = start_date..start_date.next_day(6)
 
-      raw_log.keys.each do |day|
-        if Date.parse(day).cweek != start_date.cweek
+      raw_log.keys.each do |raw_day|
+        day = Date.parse(raw_day)
+        unless @date_range.include?(day)
           puts "Days from multiple weeks present."
+          puts "#{day} not present in #{@date_range}"
           puts "Ensure log only contains days from one calendar week (Sun-Sat)."
           exit 1
         end
       end
 
       # create days
-      current_date = start_date.dup
-      7.times.each_with_index do |day_id|
-        @days[day_id] = Day.new(day_id, current_date)
-        current_date = current_date.next_day
-      end
+      @date_range.each { |d| @days << Day.new(d) }
 
       # map category tasks to days so tasks can be looked up by day or category
       self.category_manager.categories.each do |category|

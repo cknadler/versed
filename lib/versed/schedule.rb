@@ -23,15 +23,7 @@ module Versed
       start_date = start_date.prev_day(start_date.wday)
       @date_range = start_date..start_date.next_day(6)
 
-      raw_log.keys.each do |raw_day|
-        day = Date.parse(raw_day)
-        unless @date_range.include?(day)
-          puts "Days from multiple weeks present."
-          puts "#{day} not present in #{@date_range}"
-          puts "Ensure log only contains days from one calendar week (Sun-Sat)."
-          exit 1
-        end
-      end
+      validate_log(raw_log)
 
       # create days
       @date_range.each { |d| @days << Day.new(d) }
@@ -64,6 +56,18 @@ module Versed
     end
 
     private
+
+    def validate_log(raw_log)
+      raw_log.keys.each do |raw_day|
+        day = Date.parse(raw_day)
+        unless @date_range.include?(day)
+          puts "Days from multiple weeks present."
+          puts "#{day} not present in #{@date_range}"
+          puts "Ensure log only contains days from one calendar week (Sun-Sat)."
+          exit 1
+        end
+      end
+    end
 
     def map_time_scheduled(raw_schedule)
       7.times.each_with_index do |day_id|

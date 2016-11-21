@@ -15,26 +15,15 @@ module Versed
     ]
 
     def initialize(raw_schedule, raw_log)
-      map_categories(raw_schedule, raw_log)
-
       @days = []
-
       start_date = Date.parse(raw_log.keys[0])
       start_date = start_date.prev_day(start_date.wday)
       @date_range = start_date..start_date.next_day(6)
 
       validate_log(raw_log)
 
-      # create days
-      @date_range.each { |d| @days << Day.new(d) }
-
-      # map category tasks to days so tasks can be looked up by day or category
-      categories.each do |category|
-        category.tasks.each_with_index do |task, index|
-          @days[index].tasks << task
-        end
-      end
-
+      map_categories(raw_schedule, raw_log)
+      map_days
       map_time_scheduled(raw_schedule)
       map_time_spent(raw_log)
     end
@@ -78,6 +67,16 @@ module Versed
       @categories = {}
       (category_ids(raw_schedule) + category_ids(raw_log)).uniq.sort.each do |id|
         @categories[id] = Versed::Category.new(id)
+      end
+    end
+
+    def map_days
+      @date_range.each { |d| @days << Day.new(d) }
+      # map category tasks to days so tasks can be looked up by day or category
+      categories.each do |category|
+        category.tasks.each_with_index do |task, index|
+          @days[index].tasks << task
+        end
       end
     end
 

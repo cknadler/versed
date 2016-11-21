@@ -4,9 +4,9 @@ module Versed
   class Category
     attr_reader :id, :tasks
 
-    def initialize(id)
+    def initialize(id, date_range)
       @id = id
-      @tasks = Array.new(7) { Task.new(id) }
+      @tasks = Array.new(date_range.length) { Task.new(id) }
     end
 
     def to_hash

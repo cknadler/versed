@@ -40,7 +40,7 @@ module Versed
     def map_categories(raw_schedule, raw_log)
       @categories = {}
       (category_ids(raw_schedule) + category_ids(raw_log)).uniq.sort.each do |id|
-        @categories[id] = Versed::Category.new(id)
+        @categories[id] = Versed::Category.new(id, date_range)
       end
     end
 

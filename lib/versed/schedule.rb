@@ -14,14 +14,8 @@ module Versed
       "Saturday"
     ]
 
-    def initialize(raw_schedule, raw_log)
-      @days = []
-      start_date = Date.parse(raw_log.keys[0])
-      start_date = start_date.prev_day(start_date.wday)
-      @date_range = start_date..start_date.next_day(6)
-
-      validate_log(raw_log)
-
+    def initialize(raw_schedule, raw_log, date_range)
+      @date_range = date_range
       map_categories(raw_schedule, raw_log)
       map_days
       map_time_scheduled(raw_schedule)
@@ -43,26 +37,6 @@ module Versed
 
     private
 
-    ###
-    # Validation
-    ###
-
-    def validate_log(raw_log)
-      raw_log.keys.each do |raw_day|
-        day = Date.parse(raw_day)
-        unless @date_range.include?(day)
-          puts "Days from multiple weeks present."
-          puts "#{day} not present in #{@date_range}"
-          puts "Ensure log only contains days from one calendar week (Sun-Sat)."
-          exit 1
-        end
-      end
-    end
-
-    ###
-    # Parsing and Model Creation
-    ###
-
     def map_categories(raw_schedule, raw_log)
       @categories = {}
       (category_ids(raw_schedule) + category_ids(raw_log)).uniq.sort.each do |id|
@@ -71,6 +45,7 @@ module Versed
     end
 
     def map_days
+      @days = []
       @date_range.each { |d| @days << Day.new(d) }
       # map category tasks to days so tasks can be looked up by day or category
       categories.each do |category|
@@ -105,10 +80,6 @@ module Versed
       end
     end
 
-    ###
-    # Categories
-    ###
-
     # Finds the category object for the given category id
     # @param id [String] A category id
     # @return [Category] The category object matching the id
@@ -132,13 +103,5 @@ module Versed
       end
       category_ids.uniq
     end
-
-    ###
-    # Days
-    ###
-
-    ###
-    # General
-    ###
   end
 end

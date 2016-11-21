@@ -11,10 +11,16 @@ module Versed
     # the content into task objects, generates the visualization HTML and
     # converts the HTML to a PDF.
     def self.run(schedule_path, log_path, output_path)
+      # determine date range
+      start_date = Date.parse(raw_log.keys[0])
+      start_date = start_date.prev_day(start_date.wday)
+      date_range = start_date..start_date.next_day(6)
+      validate_log(raw_log, date_range)
+
       # create models
       raw_schedule = Versed::Reader.read(schedule_path)
       raw_log = Versed::Reader.read(log_path)
-      schedule = Versed::Schedule.new(raw_schedule, raw_log)
+      schedule = Versed::Schedule.new(raw_schedule, raw_log, date_range)
       schedule_view = Versed::ScheduleView.new(schedule)
 
       # make HTML page
@@ -34,6 +40,20 @@ module Versed
 
       kit = PDFKit.new(html, :page_size => 'Letter')
       kit.to_file(output_path)
+    end
+
+    private
+
+    def validate_log(raw_log, date_range)
+      raw_log.keys.each do |raw_day|
+        day = Date.parse(raw_day)
+        unless date_range.include?(day)
+          puts "Days from multiple weeks present."
+          puts "#{day} not present in #{date_range}"
+          puts "Ensure log only contains days from one calendar week (Sun-Sat)."
+          exit 1
+        end
+      end
     end
   end
 end

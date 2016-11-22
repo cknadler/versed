@@ -39,7 +39,8 @@ module Versed
     def map_days
       @days = []
       @date_range.each { |d| @days << Day.new(d) }
-      # map category tasks to days so tasks can be looked up by day or category
+
+      # map category tasks to days
       categories.each do |category|
         category.tasks.each_with_index do |task, index|
           @days[index].tasks << task
@@ -48,9 +49,9 @@ module Versed
     end
 
     def map_time_scheduled(raw_schedule)
-      7.times.each_with_index do |day_id|
-        schedule_day = raw_schedule[Versed::Constants::WEEKDAYS[day_id]]
-        next unless day_id
+      @days.each_with_index do |day, day_id|
+        schedule_day = raw_schedule[Versed::Constants::WEEKDAYS[day.date.wday]]
+        next unless schedule_day
 
         schedule_day.each do |scheduled_task_name, time_scheduled|
           category = lookup_category(scheduled_task_name)

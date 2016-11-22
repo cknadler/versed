@@ -13,7 +13,7 @@ module Versed
         "weekdays" => Versed::Constants::WEEKDAYS,
         "categories" => [],
         "metadata" => metadata,
-        "incomplete_tasks" => @schedule.incomplete_tasks,
+        "incomplete_tasks" => incomplete_tasks,
         "first_date" => @schedule.days[0].date
       }
 
@@ -113,7 +113,6 @@ module Versed
       end
       top_tasks
     end
-
 
     ###
     # General

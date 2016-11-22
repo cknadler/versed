@@ -51,9 +51,9 @@ module Versed
       raw_log.keys.each do |raw_day|
         day = Date.parse(raw_day)
         unless date_range.include?(day)
-          puts "Days from multiple weeks present."
+          puts "Days from multiple months present."
           puts "#{day} not present in #{date_range}"
-          puts "Ensure log only contains days from one calendar week (Sun-Sat)."
+          puts "Ensure log only contains days from one calendar month."
           exit 1
         end
       end

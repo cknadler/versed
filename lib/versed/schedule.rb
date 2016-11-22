@@ -1,18 +1,10 @@
-require "versed/day_manager"
+require "versed/category"
+require "versed/constants"
+require "versed/day"
 
 module Versed
   class Schedule
     attr_reader :days, :date_range
-
-    WEEKDAYS = [
-      "Sunday",
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      "Saturday"
-    ]
 
     def initialize(raw_schedule, raw_log, date_range)
       @date_range = date_range
@@ -57,7 +49,7 @@ module Versed
 
     def map_time_scheduled(raw_schedule)
       7.times.each_with_index do |day_id|
-        schedule_day = raw_schedule[WEEKDAYS[day_id]]
+        schedule_day = raw_schedule[Versed::Constants::WEEKDAYS[day_id]]
         next unless day_id
 
         schedule_day.each do |scheduled_task_name, time_scheduled|
@@ -74,7 +66,6 @@ module Versed
         tasks.each do |log_task_name, time_spent|
           category = lookup_category(log_task_name)
           next unless category # TODO: possibly handle tasks that are done out of the schedule here
-
           category.tasks[day_id].time_spent = time_spent
         end
       end

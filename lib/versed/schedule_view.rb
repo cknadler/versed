@@ -1,3 +1,4 @@
+require "versed/constants"
 require "versed/schedule"
 
 module Versed
@@ -9,7 +10,7 @@ module Versed
 
     def to_hash
       hash = {
-        "weekdays" => WEEKDAYS,
+        "weekdays" => Versed::Constants::WEEKDAYS,
         "categories" => [],
         "metadata" => metadata,
         "incomplete_tasks" => @schedule.incomplete_tasks,

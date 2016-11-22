@@ -6,7 +6,7 @@ module Versed
 
     def initialize(id, date_range)
       @id = id
-      @tasks = Array.new(date_range.length) { Task.new(id) }
+      @tasks = Array.new(date_range.to_a.size) { Task.new(id) }
     end
 
     def to_hash

@@ -16,9 +16,10 @@ module Versed
       raw_log = Versed::Reader.read(log_path)
 
       # determine date range
-      start_date = Date.parse(raw_log.keys[0])
-      start_date = start_date.prev_day(start_date.wday)
-      date_range = start_date..start_date.next_day(6)
+      origin = Date.parse(raw_log.keys[0])
+      start_date = Date.new(origin.year, origin.month, 1)
+      end_date = Date.new(origin.year, origin.month, -1)
+      date_range = start_date..end_date
       validate_log(raw_log, date_range)
 
       # map model and view model

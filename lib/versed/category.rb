@@ -9,19 +9,6 @@ module Versed
       @tasks = Array.new(date_range.to_a.size) { Task.new(id) }
     end
 
-    def to_hash
-      hash = {
-        "id" => self.id,
-        "tasks" => []
-      }
-
-      self.tasks.each do |task|
-        hash["tasks"] << task.to_hash
-      end
-
-      hash
-    end
-
     def incomplete?
       total_min_incomplete > 0
     end

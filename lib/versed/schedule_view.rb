@@ -4,27 +4,69 @@ require "versed/schedule"
 module Versed
   class ScheduleView
 
+    DAYS_PER_ROW = 8
+
     def initialize(schedule)
       @schedule = schedule
     end
 
     def to_hash
       hash = {
-        "weekdays" => Versed::Constants::WEEKDAYS,
-        "categories" => [],
+        "sections" => [],
         "metadata" => metadata,
         "incomplete_tasks" => incomplete_tasks,
         "first_date" => @schedule.days[0].date
       }
 
+      section = nil
+      @schedule.days.each_with_index do |day, day_id|
+        if day_id % DAYS_PER_ROW == 0
+          section = {
+            "days" => [],
+            "categories" => []
+          }
+          hash["sections"] << section
+        end
+
+        section["days"] << day.date.strftime("%m.%d")
+      end
+
+      day_ranges = []
+      day_max = @schedule.days.size - 1
+      start_date = 0
+      while start_date <= day_max
+        end_date = [start_date + DAYS_PER_ROW - 1, day_max].min
+        day_ranges << (start_date..end_date)
+        start_date = end_date + 1
+      end
+
       @schedule.categories.each do |category|
-        hash["categories"] << category.to_hash
+        day_ranges.each_with_index do |range, section_index|
+          hash["sections"][section_index]["categories"] << category_hash(category, range)
+        end
       end
 
       hash
     end
 
     private
+
+    ###
+    # model hashes
+    ###
+
+    def category_hash(category, day_range)
+      hash = {
+        "id" => category.id,
+        "tasks" => []
+      }
+
+      category.tasks[day_range].each do |task|
+        hash["tasks"] << task.to_hash
+      end
+
+      hash
+    end
 
     ###
     # metadata
@@ -60,7 +102,7 @@ module Versed
     end
 
     def days_active_percent
-      percent(days_active, 7)
+      percent(days_active, @schedule.days.size)
     end
 
     def total_min_logged
@@ -80,7 +122,7 @@ module Versed
     end
 
     def min_logged_per_day
-      divide(total_min_logged, 7)
+      divide(total_min_logged, @schedule.days.size)
     end
 
     def hr_logged_per_day

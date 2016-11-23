@@ -4,7 +4,7 @@ require "versed/day"
 
 module Versed
   class Schedule
-    attr_reader :days, :date_range
+    attr_reader :days
 
     def initialize(raw_schedule, raw_log, date_range)
       @date_range = date_range
@@ -32,7 +32,7 @@ module Versed
     def map_categories(raw_schedule, raw_log)
       @categories = {}
       (category_ids(raw_schedule) + category_ids(raw_log)).uniq.sort.each do |id|
-        @categories[id] = Versed::Category.new(id, date_range)
+        @categories[id] = Versed::Category.new(id, @date_range)
       end
     end
 

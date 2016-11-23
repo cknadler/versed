@@ -62,7 +62,7 @@ module Versed
 
     def map_time_spent(raw_log)
       raw_log.each do |day, tasks|
-        day_id = Date.parse(day).wday
+        day_id = Date.parse(day).mday - 1
 
         tasks.each do |log_task_name, time_spent|
           category = lookup_category(log_task_name)

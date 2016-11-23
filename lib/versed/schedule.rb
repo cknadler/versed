@@ -1,10 +1,9 @@
 require "versed/category"
-require "versed/constants"
 require "versed/day"
 
 module Versed
   class Schedule
-    attr_reader :days
+    attr_reader :days, :categories
 
     def initialize(raw_schedule, raw_log, date_range)
       @date_range = date_range
@@ -14,6 +13,10 @@ module Versed
       map_time_spent(raw_log)
     end
 
+    def categories
+      @categories.values
+    end
+
     # Returns an array of incomplete tasks. This array is sorted first by
     # percentage incomplete, then by total number of minutes incomplete.
     def incomplete_tasks
@@ -21,10 +24,6 @@ module Versed
       incomplete = []
       categories.each { |c| incomplete << c if c.incomplete? }
       incomplete.sort_by { |c| [-c.percent_incomplete, -c.total_min_incomplete] }
-    end
-
-    def categories
-      @categories.values
     end
 
     private
@@ -50,7 +49,7 @@ module Versed
 
     def map_time_scheduled(raw_schedule)
       @days.each_with_index do |day, day_id|
-        schedule_day = raw_schedule[Versed::Constants::WEEKDAYS[day.date.wday]]
+        schedule_day = raw_schedule[Date::DAYNAMES[day.date.wday]]
         next unless schedule_day
 
         schedule_day.each do |scheduled_task_name, time_scheduled|

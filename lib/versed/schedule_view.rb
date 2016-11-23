@@ -1,4 +1,3 @@
-require "versed/constants"
 require "versed/schedule"
 
 module Versed
@@ -14,10 +13,10 @@ module Versed
       hash = {
         "sections" => [],
         "metadata" => metadata,
-        "incomplete_tasks" => incomplete_tasks,
-        "first_date" => @schedule.days[0].date
+        "incomplete_tasks" => incomplete_tasks
       }
 
+      # fill in days
       section = nil
       @schedule.days.each_with_index do |day, day_id|
         if day_id % DAYS_PER_ROW == 0
@@ -31,6 +30,7 @@ module Versed
         section["days"] << day.date.strftime("%m.%d")
       end
 
+      # determine row date ranges
       day_ranges = []
       day_max = @schedule.days.size - 1
       start_date = 0
@@ -40,11 +40,16 @@ module Versed
         start_date = end_date + 1
       end
 
+      # fill in categories and tasks
       @schedule.categories.each do |category|
         day_ranges.each_with_index do |range, section_index|
           hash["sections"][section_index]["categories"] << category_hash(category, range)
         end
       end
+
+      # create header
+      origin = @schedule.days.first.date
+      hash["header"] = "#{Date::MONTHNAMES[origin.month]} #{origin.year}"
 
       hash
     end

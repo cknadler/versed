@@ -2,16 +2,16 @@ PATH
   remote: .
   specs:
     versed (0.1.0)
+      imgkit (~> 1.6.1)
       mustache (~> 1.0)
-      pdfkit (~> 0.8.2)
-      wkhtmltopdf-binary (~> 0.12.3)
+      wkhtmltoimage-binary (~> 0.12.2)
 
 GEM
   remote: https://rubygems.org/
   specs:
+    imgkit (1.6.1)
     mustache (1.0.3)
-    pdfkit (0.8.2)
-    wkhtmltopdf-binary (0.12.3)
+    wkhtmltoimage-binary (0.12.2)
 
 PLATFORMS
   ruby

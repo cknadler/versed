@@ -1,5 +1,4 @@
 require "mustache"
-require "pdfkit"
 require "versed/reader"
 require "versed/schedule"
 require "versed/schedule_view"
@@ -38,11 +37,12 @@ module Versed
 
       if File.directory?(output_path)
         first_date = schedule.days[0].date
-        output_path = File.join(output_path, "#{first_date}-routine-analysis.pdf")
+        output_path = File.join(output_path, "#{first_date}-routine-analysis.html")
       end
 
-      kit = PDFKit.new(html, :page_size => 'Letter')
-      kit.to_file(output_path)
+      file = File.open(output_path, "w")
+      file << html
+      file.close
     end
 
     private

@@ -50,7 +50,7 @@ module Versed
       # create header
       origin = @schedule.days.first.date
       hash["header"] = "#{Date::MONTHNAMES[origin.month]} #{origin.year}"
-      hash["sub_header"] = "Generated #{Date.today}"
+      hash["sub_header"] = "Generated on #{Date.today}"
 
       hash
     end

@@ -31,15 +31,15 @@ module Versed
       main_template_path = File.join(templates_path, "page.mustache")
       html = Mustache.render(IO.read(main_template_path), schedule_view.to_hash)
 
-      # make the PDF
+      # determine output path
       output_path = Dir.pwd unless output_path
       output_path = File.expand_path(output_path)
-
       if File.directory?(output_path)
         file_name = schedule.days[0].date.strftime("%Y-%m.html")
         output_path = File.join(output_path, file_name)
       end
 
+      # output
       file = File.open(output_path, "w")
       file << html
       file.close

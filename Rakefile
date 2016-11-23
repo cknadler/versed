@@ -14,7 +14,7 @@ task :examples do
 end
 
 task :clean do
-  system("rm #{ws_root}/*.pdf")
+  system("rm #{ws_root}/*.html")
 end
 
 task :default => :examples

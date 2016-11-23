@@ -36,8 +36,8 @@ module Versed
       output_path = File.expand_path(output_path)
 
       if File.directory?(output_path)
-        first_date = schedule.days[0].date
-        output_path = File.join(output_path, "#{first_date}-routine-analysis.html")
+        file_name = schedule.days[0].date.strftime("%Y-%m.html")
+        output_path = File.join(output_path, file_name)
       end
 
       file = File.open(output_path, "w")

@@ -25,6 +25,8 @@ visualization of time spent this week (in an HTML page).
 
 ## Input
 
+See `examples` for a real world example.
+
 ```
 # schedule.yaml
 

@@ -103,12 +103,16 @@ module Versed
       ]
     end
 
+    def days_past
+      @days_past ||= @schedule.days.reject { |day| day.date >= Date.today }
+    end
+
     def days_active
-      @schedule.days.count { |d| d.active? }
+      days_past.count { |d| d.active? }
     end
 
     def days_active_percent
-      percent(days_active, @schedule.days.size)
+      percent(days_active, days_past.size)
     end
 
     def total_min_logged
@@ -116,11 +120,11 @@ module Versed
     end
 
     def total_min_logged_on_schedule
-      @schedule.days.collect { |d| d.time_on_schedule }.reduce(0, :+)
+      days_past.collect { |d| d.time_on_schedule }.reduce(0, :+)
     end
 
     def total_min_logged_off_schedule
-      @schedule.days.collect { |d| d.time_off_schedule }.reduce(0, :+)
+      days_past.collect { |d| d.time_off_schedule }.reduce(0, :+)
     end
 
     def total_hr_logged
@@ -128,7 +132,7 @@ module Versed
     end
 
     def min_logged_per_day
-      divide(total_min_logged, @schedule.days.size)
+      divide(total_min_logged, days_past.size)
     end
 
     def hr_logged_per_day
@@ -136,7 +140,7 @@ module Versed
     end
 
     def total_min_scheduled
-      @schedule.days.collect { |d| d.time_scheduled }.reduce(0, :+)
+      days_past.collect { |d| d.time_scheduled }.reduce(0, :+)
     end
 
     def completed_percent

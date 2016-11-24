@@ -65,7 +65,7 @@ module Versed
 
         tasks.each do |log_task_name, time_spent|
           category = lookup_category(log_task_name)
-          next unless category # TODO: possibly handle tasks that are done out of the schedule here
+          assert(category, "Any category here should have been in the log or schedule.")
           category.tasks[day_id].time_spent = time_spent
         end
       end

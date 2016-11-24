@@ -6,7 +6,8 @@ module Versed
 
     def initialize(id, date_range)
       @id = id
-      @tasks = Array.new(date_range.to_a.size) { Task.new(id) }
+      @tasks = []
+      date_range.each { |date| @tasks << Task.new(id, date) }
     end
 
     def incomplete?

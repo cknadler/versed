@@ -16,7 +16,9 @@ END
 
 DESC = <<END
 
-Versed takes in two YAML files (schedule and weekly log) and outputs a visualization of time spent this week (in a PDF).
+Versed takes in a schedule and weekly log (as YAML files) and outputs a
+visualization of time spent this week (in an HTML page).
+
 See https://github.com/cknadler/versed for more details.
 
 END
